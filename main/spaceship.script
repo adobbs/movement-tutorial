@@ -2,6 +2,7 @@ function init(self)
 	msg.post(".", "acquire_input_focus")
 	self.velocity = vmath.vector3()
 	self.input = vmath.vector3()
+	self.maxSpeed = 200
 end
 
 function update(self, dt)
@@ -14,11 +15,24 @@ function update(self, dt)
 	local dv = acceleration * dt
 	local v0 = self.velocity
 	local v1 = self.velocity + dv
+
+	if(v1.x > self.maxSpeed) then
+		v1.x = self.maxSpeed
+	elseif(v1.x < -self.maxSpeed) then
+		v1.x = -self.maxSpeed
+	end
+
+	if(v1.y > self.maxSpeed) then
+		v1.y = self.maxSpeed
+	elseif(v1.y < -self.maxSpeed) then
+		v1.y = -self.maxSpeed
+	end
+	
 	local movement = (v0 + v1) * dt * 0.5
 	
 	local p = go.get_position()
 	go.set_position(p + movement)
-
+	
 	self.velocity = v1
 	self.input = vmath.vector3()
 end
