@@ -3,6 +3,8 @@ function init(self)
 	self.velocity = vmath.vector3()
 	self.input = vmath.vector3()
 	self.maxSpeed = 200
+	self.spriteWidth = go.get("#sprite", "size.x")
+	self.spriteHeight = go.get("#sprite", "size.y")
 end
 
 function update(self, dt)
@@ -16,21 +18,39 @@ function update(self, dt)
 	local v0 = self.velocity
 	local v1 = self.velocity + dv
 
-	if(v1.x > self.maxSpeed) then
+	if (v1.x > self.maxSpeed) then
 		v1.x = self.maxSpeed
-	elseif(v1.x < -self.maxSpeed) then
+	elseif (v1.x < -self.maxSpeed) then
 		v1.x = -self.maxSpeed
 	end
 
-	if(v1.y > self.maxSpeed) then
+	if (v1.y > self.maxSpeed) then
 		v1.y = self.maxSpeed
-	elseif(v1.y < -self.maxSpeed) then
+	elseif (v1.y < -self.maxSpeed) then
 		v1.y = -self.maxSpeed
 	end
 	
 	local movement = (v0 + v1) * dt * 0.5
 	
 	local p = go.get_position()
+	local wx, wy = window.get_size()
+
+	if (p.x >= wx - self.spriteWidth / 2) then
+		p.x = wx - self.spriteWidth / 2 - 1
+		v1.x = -v1.x
+	elseif (p.x <= self.spriteWidth / 2) then
+		p.x = self.spriteWidth / 2 + 1
+		v1.x = -v1.x
+	end
+
+	if (p.y >= wy - self.spriteHeight / 2) then
+		p.y = wy - self.spriteHeight / 2 - 1
+		v1.y = -v1.y
+	elseif (p.y <= self.spriteHeight / 2) then
+		p.y = self.spriteHeight / 2 + 1
+		v1.y = -v1.y
+	end
+	
 	go.set_position(p + movement)
 	
 	self.velocity = v1
